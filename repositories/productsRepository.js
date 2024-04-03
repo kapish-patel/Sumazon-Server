@@ -1,4 +1,7 @@
-const productModel = require('../models/productsmodel');
+// Description: This file contains the repository for the products API.
+
+const productModel = require('../models/productsModel');
+const categoryModel = require('../models/categoriesModel');
 
 // get all the document
 async function getTenDocuments(){
@@ -9,16 +12,32 @@ async function getTenDocuments(){
 
 // get a specific document
 async function getDocument(DID){
+
+    // get the document
     const filter = {product_id:DID}
     console.log(filter);
     const item = await productModel.findOne(filter).exec();
-    // fetch the product category name from the category collection
-
-    const category_id = item.category_id;
-    console.log(category_id);
     
 
-    return item;
+    // get the category name
+    const category_id = item.category_id;
+    const category_filter = {id:category_id}; 
+    const category = await categoryModel.findOne(category_filter).exec();  
+    
+
+    // add the category name to the item
+    return new_item = {
+        product_id: item.product_id,
+        product_name: item.title,
+        product_image: item.imgUrl,
+        product_category_id: item.category_id,
+        product_category_name: category.category_name,
+        product_price: item.price,
+        product_rating: item.rating,
+        product_isBestSeller: item.isBestSeller,
+        product_boughtInLastMonth: item.boughtInLastMonth,
+        products_stars: item.stars
+    }
 }
 
 

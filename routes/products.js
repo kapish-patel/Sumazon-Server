@@ -1,4 +1,4 @@
-// all the routes related to products will be in routes/products.js
+// Description: This file contains the routes for the products API.
 
 var productsRepository = require('../repositories/productsRepository');
 var express = require('express');
@@ -8,6 +8,7 @@ var router = express.Router();
 
 // get all products
 router.get('/', (req, res, next) =>{
+    console.log(process.env.USER);
     productsRepository.getTenDocuments().then((allItems) => {
         res.json(allItems);
     }).catch((err) => {

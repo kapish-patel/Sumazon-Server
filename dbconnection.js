@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 class dbConnection {
     static mongooseInstance;
     static mongooseConnection;
-    static DB_CONNECTION_STRING = `mongodb+srv://dbuser:dbuser8901@sumazon.vzji5sd.mongodb.net/sumazon`;
+    static DB_CONNECTION_STRING = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@sumazon.vzji5sd.mongodb.net/sumazon`;
     
     static connect(){
 
