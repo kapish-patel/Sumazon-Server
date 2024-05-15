@@ -1,16 +1,14 @@
-
 require('dotenv').config();
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const productsRouter = require('./routes/products.js');
+const usersRouter = require('./routes/user.js');
+const authRouter = require('./routes/auth.js');
 
-
-
-var productsRouter = require('./routes/products');
-
-var app = express();
+const app = express();
 
 // Middleware setup
 app.use(logger('dev'));
@@ -21,6 +19,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Route setup
 app.use('/products', productsRouter);
+app.use('/users', usersRouter);
+// app.use('/auth', authRouter);
 
 
 // Error handling middleware

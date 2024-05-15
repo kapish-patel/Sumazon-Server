@@ -1,15 +1,14 @@
 // Description: This file contains the routes for the products API.
 
-var productsRepository = require('../repositories/productsRepository');
-var express = require('express');
-var router = express.Router();
+const { getTenDocuments, getDocument } = require('../repositories/productsRepository');
+const { Router } = require('express');
+const router = Router();
 
 // GET products listing
 
 // get all products
 router.get('/', (req, res, next) =>{
-    console.log(process.env.USER);
-    productsRepository.getTenDocuments().then((allItems) => {
+    getTenDocuments().then((allItems) => {
         res.json(allItems);
     }).catch((err) => {
         res.json(err);
@@ -21,8 +20,7 @@ router.get('/:id', (req, res, next) =>{
     //get the product with the id from query parameter
     const id = req.params.id;
 
-    console.log(id);
-    productsRepository.getDocument(id).then((item) => {
+    getDocument(id).then((item) => {
         res.json(item);
     }).catch((err) => {
         res.json(err);

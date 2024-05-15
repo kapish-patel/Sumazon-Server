@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 
-const dbconnection = require('../dbconnection');
+const dbconnection = require('../dbconnection.js');
 
 dbconnection.connect();
 

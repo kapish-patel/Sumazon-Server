@@ -16,6 +16,8 @@
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.4",
     "morgan": "~1.9.1",
-    "nodemon": "^3.1.0"
+    "passport": "^0.7.0",
+    "passport-google-oidc": "^0.1.0",
+    "uuid": "^9.0.1"
   }
 }
