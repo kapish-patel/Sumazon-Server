@@ -1,7 +1,6 @@
 
 const { v4: uuidv4 } = require('uuid');
 const userModel = require('../models/userModel');
-const { name } = require('ejs');
 
 // get a specific user
 async function userLogin(req){

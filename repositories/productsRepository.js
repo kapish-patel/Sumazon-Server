@@ -1,4 +1,5 @@
 const productModel = require('../models/productsModel');
+const { v4: uuidv4 } = require('uuid');
 
 const categoryIdToNameMap = {
     "8": "Male Clothing & Accessories",
@@ -72,22 +73,43 @@ async function getProductById(DID){
     }
 }
 
-
-
-
 // add a new document
-// async function add_Document(req){
-//     const {title, description} = req.body;
-//     const UTC_date = get_Date();
+async function addProduct(req){
+    const {name, description, price, quantity, category, image, userId} = req.body;
+    console.log(req.body)
+    const product_id = uuidv4();
 
-//     const new_Document = new documentModel({
-//         title: title,
-//         description: description,
-//         last_Update: UTC_date
-//     });
-//     const newdoc = await new_Document.save();
-//     return newdoc;
-// }
+    const new_Document = new productModel({
+        product_id: product_id,
+        title: name,
+        quantity: parseInt(quantity) || 0,
+        price: parseFloat(price) || 0.0,
+        description: description,
+        category_id: getCategoryId(category),
+        imgUrl: image,
+        stars: 0,
+        isBestSeller: false,
+        seller_id: userId
+    });
+    console.log(new_Document)
+    const newdoc = await new_Document.save();
+
+    // transform the document and return it
+
+    const transformedItems = {
+        id: newdoc.product_id,
+        productName: newdoc.title,
+        productImage: newdoc.imgUrl,
+        quantity: newdoc.quantity,
+        price: newdoc.price,
+        description: newdoc.description,
+        category: categoryIdToNameMap[newdoc.category_id] || "Unassigned", 
+        ratings: newdoc.stars,
+        bestSeller: newdoc.isBestSeller,
+    };
+
+    return transformedItems;
+}
 
 // remove a document
 async function deleteProduct(req){
@@ -107,8 +129,8 @@ async function updateProduct(req){
     }
     console.log(update)
     const updatedProduct = await productModel.findOneAndUpdate(filter, update, {new: true}).exec();
-    console.log(updatedProduct)
+    return updatedProduct;
 }
 
 
-module.exports = {getProducts, getProductById, updateProduct, deleteProduct}
+module.exports = {getProducts, getProductById, updateProduct, deleteProduct, addProduct, getCategoryId};
