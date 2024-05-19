@@ -1,9 +1,10 @@
 // all the user routes are defined here
-const { addUser, userLogin, updateUser } = require('../repositories/userRepository');
+const e = require('express');
+const { addUser, userLogin, updateUser, getUser } = require('../repositories/userRepository');
 const { Router } = require('express');
 const router = Router();
 
-// get a specific user
+// userLogin
 router.post('/login', function (req, res, next) {
     userLogin(req).then((user) => {
         if (!user) {
@@ -15,6 +16,21 @@ router.post('/login', function (req, res, next) {
         res.json(err);
     });
 });
+
+// get a specific user
+router.get('/:email', function (req, res, next) {
+    const email = req.params.email;
+    getUser(email).then((user) => {
+        if (!user) {
+            res.status(404).json({message: "User not found"});
+        } else {
+            res.status(200).json({message: "User found", user: user});
+        }
+    }).catch((err) => {
+        res.json(err);
+    });
+});
+
 
 // create a new user
 router.post('', function (req, res, next) {

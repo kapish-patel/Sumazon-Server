@@ -7,19 +7,16 @@ const dbconnection = require('../dbconnection.js');
 dbconnection.connect();
 
 const productSchema = new mongoose.Schema({
-    _id: {type: String},
-    product_id: {type: String},
-    title: {type: String},
-    imgUrl: {type: String},
-    productURL: {type: String},
-    stars: {type: String},
-    reviews: {type: String},
-    price: {type: String},
-    listPrice: {type: String},
-    category_id: {type: String},
-    isBestSeller: {type: String},
-    boughtInLastMonth: {type: String}
+    product_id: { type: String, unique: true },
+    title: { type: String },
+    imgUrl: { type: String },
+    stars: { type: Number, default: 0 },
+    price: { type: Number },
+    category_id: { type: Number },
+    description: {type: String},
+    isBestSeller: { type: Boolean, default: false },
+    seller_id: { type: String },
+    quantity: { type: Number }
 });
 
 module.exports = productsModel = dbconnection.mongooseConnection.model('products', productSchema);
-      

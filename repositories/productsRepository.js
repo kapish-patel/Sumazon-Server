@@ -1,44 +1,78 @@
-// Description: This file contains the repository for the products API.
-
 const productModel = require('../models/productsModel');
-const categoryModel = require('../models/categoriesModel');
 
-// get all the document
-async function getTenDocuments(){
-    const allItems = await productModel.find().limit(10).exec();
-    return allItems;
+const categoryIdToNameMap = {
+    "8": "Male Clothing & Accessories",
+    "4": "Female Clothing & Accessories",
+    "7": "Kids & Toys",
+    "9": "Sports & Fitness",
+    "3": "Electronics & Technology",
+    "6": "Home & Lifestyle",
+    "1": "Pets & Animals",
+    "5": "Health & Wellness",
+    "2": "DIY & Industrial",
+    "10": "Automotive & Vehicle"
 };
 
+function getCategoryId(categoryName) {
+    for (const [id, name] of Object.entries(categoryIdToNameMap)) {
+        if (name === categoryName) {
+            return id;
+        }
+    }
+    return null; // return null if the category name is not found
+}
 
-// get a specific document
-async function getDocument(DID){
+// get all the document
+async function getProducts(userId) {
+    try {
+        const filter = {seller_id: userId}
+        const allItems = await productModel.find(filter).exec(); // Fetch all products
 
-    // get the document
-    const filter = {product_id:DID}
-    console.log(filter);
-    const item = await productModel.findOne(filter).exec();
-    
-
-    // get the category name
-    const category_id = item.category_id;
-    const category_filter = {id:category_id}; 
-    const category = await categoryModel.findOne(category_filter).exec();  
-    
-
-    // add the category name to the item
-    return new_item = {
-        product_id: item.product_id,
-        product_name: item.title,
-        product_image: item.imgUrl,
-        product_category_id: item.category_id,
-        product_category_name: category.category_name,
-        product_price: item.price,
-        product_rating: item.rating,
-        product_isBestSeller: item.isBestSeller,
-        product_boughtInLastMonth: item.boughtInLastMonth,
-        products_stars: item.stars
+        // Transform each product with additional async category lookup
+        const transformedItems = allItems.map(item => ({
+                id: item.product_id,
+                productName: item.title,
+                quantity: item.quantity,
+                price: item.price,
+                description: item.description,
+                category: categoryIdToNameMap[item.category_id] || "Unassigned", 
+                ratings: item.stars,
+                bestSeller: item.isBestSeller,
+        }));
+        return transformedItems; // Return transformed product array
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        throw error; // Throw error to handle it elsewhere if needed
     }
 }
+
+
+// get a specific product
+async function getProductById(DID){
+    try {
+        const filter = {product_id:DID}
+        const item = await productModel.findOne(filter).exec(); // Fetch all products
+
+        // Transform each product with additional async category lookup
+        const transformedItems = {
+                id: item.product_id,
+                productName: item.title,
+                productImage: item.imgUrl,
+                quantity: item.quantity,
+                price: item.price,
+                description: item.description,
+                category: categoryIdToNameMap[item.category_id] || "Unassigned", 
+                ratings: item.stars,
+                bestSeller: item.isBestSeller,
+        };
+        return transformedItems; // Return transformed product array
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        throw error; // Throw error to handle it elsewhere if needed
+    }
+}
+
+
 
 
 // add a new document
@@ -55,27 +89,26 @@ async function getDocument(DID){
 //     return newdoc;
 // }
 
-// // remove a document
-// async function removeDocument(doc_ID){
-//     await documentModel.deleteOne({_id: doc_ID});
-//     return {success: "The document successfully deleted"}
-// }
+// remove a document
+async function deleteProduct(req){
+    const filter = {product_id: req.params.id}
+    const deletedProduct = await productModel.findOneAndDelete(filter).exec();
+    return deletedProduct !== null;
+}
 
-// // update a document
-// async function updateDocument(req){
-//     const doc_ID = req.params.DID;
-//     const new_title = req.body.title;
-//     const new_description = req.body.description;
-//     const UTC_date = get_Date();
-
-//     const filter = {_id: doc_ID}
-//     const update = {title: new_title, description: new_description, last_Update: UTC_date }
-    
-//     const updaterecord = await documentModel.findOneAndUpdate(filter, update);
-    
-    
-//     return updaterecord;
-// }
+// update a document
+async function updateProduct(req){
+    const filter = {product_id: req.params.id}
+    const update = {
+        title: req.body.productName || product.productName,
+        quantity: req.body.quantity || product.quantity,
+        price: req.body.price || product.price,
+        description: req.body.description || product.description
+    }
+    console.log(update)
+    const updatedProduct = await productModel.findOneAndUpdate(filter, update, {new: true}).exec();
+    console.log(updatedProduct)
+}
 
 
-module.exports = {getTenDocuments, getDocument};
+module.exports = {getProducts, getProductById, updateProduct, deleteProduct}

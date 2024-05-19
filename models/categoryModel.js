@@ -7,8 +7,8 @@ dbconnection.connect();
 
 const categorySchema = new mongoose.Schema({
     _id: { type: String },
-    id: { type: String },
-    category_name: { type: String }
+    category_name: { type: String },
+    category_id: { type: Number },
 });
 
 module.exports = categoryModel = dbconnection.mongooseConnection.model('categories', categorySchema);
