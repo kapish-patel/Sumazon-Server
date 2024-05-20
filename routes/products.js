@@ -1,10 +1,17 @@
 // Description: This file contains the routes for the products API.
 
-const { getProducts, getProductById, updateProduct, deleteProduct, addProduct } = require('../repositories/productsRepository');
+const { getAllProducts, getProducts, getProductById, updateProduct, deleteProduct, addProduct } = require('../repositories/productsRepository');
 const { Router } = require('express');
 const router = Router();
 
 // GET products listing
+router.get('/', (req, res, next) => {
+    getAllProducts().then((allItems) => {
+        res.json(allItems);
+    }).catch((err) => {
+        res.json(err);
+    });
+});
 
 // get all products for a specific user
 router.get('/:userId', (req, res, next) => {

@@ -23,22 +23,47 @@ function getCategoryId(categoryName) {
     return null; // return null if the category name is not found
 }
 
+// get all the products
+async function getAllProducts() {
+    try {
+        const allItems = await productModel.find().exec(); // Fetch all products
+
+        // Transform each product with additional async category lookup
+        const transformedItems = allItems.map(item => ({
+            id: item.product_id,
+            productName: item.title,
+            image: item.imgUrl,
+            quantity: item.quantity,
+            price: item.price,
+            description: item.description,
+            category: categoryIdToNameMap[item.category_id] || "Unassigned",
+            ratings: item.stars,
+            bestSeller: item.isBestSeller,
+        }));
+        return transformedItems;
+
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        throw error; // Throw error to handle it elsewhere if needed
+    }
+}
+
 // get all the document
 async function getProducts(userId) {
     try {
-        const filter = {seller_id: userId}
+        const filter = { seller_id: userId }
         const allItems = await productModel.find(filter).exec(); // Fetch all products
 
         // Transform each product with additional async category lookup
         const transformedItems = allItems.map(item => ({
-                id: item.product_id,
-                productName: item.title,
-                quantity: item.quantity,
-                price: item.price,
-                description: item.description,
-                category: categoryIdToNameMap[item.category_id] || "Unassigned", 
-                ratings: item.stars,
-                bestSeller: item.isBestSeller,
+            id: item.product_id,
+            productName: item.title,
+            quantity: item.quantity,
+            price: item.price,
+            description: item.description,
+            category: categoryIdToNameMap[item.category_id] || "Unassigned",
+            ratings: item.stars,
+            bestSeller: item.isBestSeller,
         }));
         return transformedItems; // Return transformed product array
     } catch (error) {
@@ -49,22 +74,22 @@ async function getProducts(userId) {
 
 
 // get a specific product
-async function getProductById(DID){
+async function getProductById(DID) {
     try {
-        const filter = {product_id:DID}
+        const filter = { product_id: DID }
         const item = await productModel.findOne(filter).exec(); // Fetch all products
 
         // Transform each product with additional async category lookup
         const transformedItems = {
-                id: item.product_id,
-                productName: item.title,
-                productImage: item.imgUrl,
-                quantity: item.quantity,
-                price: item.price,
-                description: item.description,
-                category: categoryIdToNameMap[item.category_id] || "Unassigned", 
-                ratings: item.stars,
-                bestSeller: item.isBestSeller,
+            id: item.product_id,
+            productName: item.title,
+            productImage: item.imgUrl,
+            quantity: item.quantity,
+            price: item.price,
+            description: item.description,
+            category: categoryIdToNameMap[item.category_id] || "Unassigned",
+            ratings: item.stars,
+            bestSeller: item.isBestSeller,
         };
         return transformedItems; // Return transformed product array
     } catch (error) {
@@ -74,8 +99,8 @@ async function getProductById(DID){
 }
 
 // add a new document
-async function addProduct(req){
-    const {name, description, price, quantity, category, image, userId} = req.body;
+async function addProduct(req) {
+    const { name, description, price, quantity, category, image, userId } = req.body;
     console.log(req.body)
     const product_id = uuidv4();
 
@@ -103,7 +128,7 @@ async function addProduct(req){
         quantity: newdoc.quantity,
         price: newdoc.price,
         description: newdoc.description,
-        category: categoryIdToNameMap[newdoc.category_id] || "Unassigned", 
+        category: categoryIdToNameMap[newdoc.category_id] || "Unassigned",
         ratings: newdoc.stars,
         bestSeller: newdoc.isBestSeller,
     };
@@ -112,15 +137,15 @@ async function addProduct(req){
 }
 
 // remove a document
-async function deleteProduct(req){
-    const filter = {product_id: req.params.id}
+async function deleteProduct(req) {
+    const filter = { product_id: req.params.id }
     const deletedProduct = await productModel.findOneAndDelete(filter).exec();
     return deletedProduct !== null;
 }
 
 // update a document
-async function updateProduct(req){
-    const filter = {product_id: req.params.id}
+async function updateProduct(req) {
+    const filter = { product_id: req.params.id }
     const update = {
         title: req.body.productName || product.productName,
         quantity: req.body.quantity || product.quantity,
@@ -128,9 +153,9 @@ async function updateProduct(req){
         description: req.body.description || product.description
     }
     console.log(update)
-    const updatedProduct = await productModel.findOneAndUpdate(filter, update, {new: true}).exec();
+    const updatedProduct = await productModel.findOneAndUpdate(filter, update, { new: true }).exec();
     return updatedProduct;
 }
 
 
-module.exports = {getProducts, getProductById, updateProduct, deleteProduct, addProduct, getCategoryId};
+module.exports = { getAllProducts, getProducts, getProductById, updateProduct, deleteProduct, addProduct, getCategoryId };

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {addCustomer, getCustomer, loginCustomer} = require('../repositories/customerRepository');
+const {addCustomer, getCustomer, loginCustomer, updateCustomer} = require('../repositories/customerRepository');
 
 router.get('/:email', async (req, res) => {
     res.json("Get customer by email")
@@ -18,6 +18,19 @@ router.post('/', async (req, res) => {
 // login a customer
 router.post('/login', async (req, res) => {
     loginCustomer(req).then((customer) => {
+        if (customer) {
+            res.status(200).json({status: true, data: customer});
+        } else {
+            res.status(401).json({status: false});
+        }
+    }).catch((err) => {
+        res.json(err);
+    });
+});
+
+// update a customer
+router.put('/', async (req, res) => {
+    updateCustomer(req).then((customer) => {
         if (customer) {
             res.status(200).json({status: true, data: customer});
         } else {

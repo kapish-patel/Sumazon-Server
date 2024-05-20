@@ -41,4 +41,33 @@ async function loginCustomer(req){
     return null;
 }
 
-module.exports = { addCustomer, loginCustomer, getCustomer };
+// Update a customer
+async function updateCustomer(req) {
+    try {
+        console.log('req.body:', req.body);
+        const { name, email, phone, address, password } = req.body;
+
+        // Assuming getCustomer is an async function that fetches a customer by email
+        const customer = await getCustomer(email);
+
+        if (!customer) {
+            return null;
+        }
+
+        // Update customer fields
+        customer.name = name || customer.name;
+        customer.phone = phone || customer.phone;
+        customer.address = address || customer.address;
+        customer.password = password || customer.password;
+
+        // Save the updated customer object back to the database
+        const updatedCustomer = await customer.save();
+        return updatedCustomer;
+    } catch (error) {
+        console.error('Error updating customer:', error);
+        return null;
+    }
+}
+
+
+module.exports = { addCustomer, loginCustomer, getCustomer, updateCustomer };
