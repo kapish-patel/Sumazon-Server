@@ -45,10 +45,18 @@ async function loginCustomer(req){
 async function updateCustomer(req) {
     try {
         console.log('req.body:', req.body);
-        const { name, email, phone, address, password } = req.body;
+        const { name, email, phone, address, password, originalEmail } = req.body;
 
         // Assuming getCustomer is an async function that fetches a customer by email
-        const customer = await getCustomer(email);
+        const existingCustomer = await getCustomer(email);
+
+        // check if the customer exists and the email is not the same as the original email
+        if (existingCustomer && existingCustomer.id !== id) {
+            console.log('Customer already exists');
+            return null;
+        }
+
+        const customer = await getCustomer(originalEmail);
 
         if (!customer) {
             return null;
@@ -57,6 +65,7 @@ async function updateCustomer(req) {
         // Update customer fields
         customer.name = name || customer.name;
         customer.phone = phone || customer.phone;
+        customer.email = email || customer.email;
         customer.address = address || customer.address;
         customer.password = password || customer.password;
 

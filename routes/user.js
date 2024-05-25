@@ -21,7 +21,7 @@ router.post('/login', function (req, res, next) {
 router.get('/:email', function (req, res, next) {
     const email = req.params.email;
     getUser(email).then((user) => {
-        if (!user) {
+        if (user == null) {
             res.status(404).json({message: "User not found"});
         } else {
             res.status(200).json({message: "User found", user: user});
@@ -34,8 +34,12 @@ router.get('/:email', function (req, res, next) {
 
 // create a new user
 router.post('', function (req, res, next) {
-    addUser(req).then(() => {
-        res.status(201).json("User created");
+    addUser(req).then((user) => {
+        if (user == null) {
+            res.status(409).json({message: "User already exists"});
+        } else {
+            res.status(201).json({message: "User created"});
+        }
     }).catch((err) => {
         res.json(err);
     });
@@ -45,7 +49,7 @@ router.post('', function (req, res, next) {
 router.patch('/:email', function (req, res, next) {
     updateUser(req).then((user) => {
         if (!user) {
-            res.status(404).json({message: "User not found"});
+            res.status(404).json({message: "User not updated or user with similar Email exists"});
         } else {
             res.status(200).json({message: "User updated", user: user});
         }
