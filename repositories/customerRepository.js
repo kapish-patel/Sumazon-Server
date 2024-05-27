@@ -21,7 +21,6 @@ async function addCustomer(req) {
         address: '',
         previous_order: []
     });
-    console.log('newCustomer:', newCustomer);
     try {
         await newCustomer.save();
         return true;

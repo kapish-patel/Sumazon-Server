@@ -8,6 +8,7 @@ const productsRouter = require('./routes/products.js');
 const usersRouter = require('./routes/user.js');
 const categoryRouter = require('./routes/category.js');
 const customersRouter = require('./routes/customers.js');
+const cartRouter = require('./routes/cart.js');
 
 const app = express();
 
@@ -23,7 +24,8 @@ app.use('/products', productsRouter);
 app.use('/users', usersRouter);
 app.use('/category', categoryRouter);
 app.use('/customers', customersRouter);
-// app.use('/auth', authRouter);
+app.use('/cart', cartRouter);
+
 
 
 // Error handling middleware
