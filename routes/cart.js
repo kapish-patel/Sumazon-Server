@@ -1,4 +1,4 @@
-const { getCartByCustomerId, createOrUpdateCart, removeProductFromCart } = require('../repositories/cartRepository')
+const { getCartByCustomerId, createOrUpdateCart, removeProductFromCart, checkoutCart } = require('../repositories/cartRepository')
 const { Router } = require('express');
 const router = Router();
 
@@ -25,6 +25,16 @@ router.post('/', (req, res, next) => {
 router.delete('/', (req, res, next) => {
     removeProductFromCart(req).then((cart) => {
         res.status(200).json({status: true, data: cart});
+    }).catch((err) => {
+        res.json(err);
+    });
+});
+
+// checkout cart
+router.post('/checkout', (req, res, next) => {
+    console.log('checkoutCart:', req.body);
+    checkoutCart(req).then((cart) => {
+        res.status(201).json({status: true, data: cart});
     }).catch((err) => {
         res.json(err);
     });
