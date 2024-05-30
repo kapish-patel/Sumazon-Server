@@ -150,7 +150,8 @@ async function updateProduct(req) {
         title: req.body.productName || product.productName,
         quantity: req.body.quantity || product.quantity,
         price: req.body.price || product.price,
-        description: req.body.description || product.description
+        description: req.body.description || product.description,
+        imgUrl: req.body.productImage || product.image,
     }
     console.log(update)
     const updatedProduct = await productModel.findOneAndUpdate(filter, update, { new: true }).exec();

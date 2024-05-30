@@ -9,6 +9,7 @@ const usersRouter = require('./routes/user.js');
 const categoryRouter = require('./routes/category.js');
 const customersRouter = require('./routes/customers.js');
 const cartRouter = require('./routes/cart.js');
+const s3Router = require('./routes/s3.js');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/products', productsRouter);
 app.use('/users', usersRouter);
 app.use('/category', categoryRouter);
 app.use('/customers', customersRouter);
+app.use('/s3url', s3Router);
 app.use('/cart', cartRouter);
 
 
